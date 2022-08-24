@@ -2,59 +2,96 @@
 #include <stdlib.h>
 #include <string.h>
 
-char getXORvalue(char divident, char divisor) {
-    if (divident == '0' && divisor == '0' || divident == '1' && divisor == '1') {
-        return '0';
-    } else {
-        return '1';
+char input[50], reciever_side[50], quot[50], rem[4], key[4];
+
+void checkSumXOR(int mode)
+{
+    int i, j;
+    char temp[4], key_duplicate[4], data[50];
+    (mode == 1)? strcpy(data, input): strcpy(data, reciever_side);
+    int len_key = strlen(key);
+    int len_msg = strlen(data);
+    strcpy(key_duplicate, key);
+    for (i = 0; i < len_key - 1; i++)
+    {
+        data[len_msg + i] = '0';
     }
+    for (i = 0; i < len_key; i++)
+    {
+        temp[i] = data[i];
+    }
+    for (i = 0; i < len_msg; i++)
+    {
+        quot[i] = temp[0];
+        if (quot[i] == '0')
+        {
+            for (j = 0; j < len_key; j++)
+                key[j] = '0';
+        }
+        else
+        {
+    for (j = 0; j < len_key; j++)
+                key[j] = key_duplicate[j];
+        }
+        for (j = len_key - 1; j > 0; j--)
+            rem[j - 1] = (temp[j] == key[j]) ? '0' : '1';
+        rem[len_key - 1] = data[i + len_key];
+        strcpy(temp, rem);
+    }
+    strcpy(rem, temp);
+    if (mode == 1) {
+		input[0] = '\0';
+		strcpy(input, data);
+	} else {
+		reciever_side[0] = '\0';
+		strcpy(reciever_side, data);
+	}
 }
 
-int main() {
-    char string[100], key[4], key_duplicate[4], temp[10], quotient[50], reminder[5], buffer;
-    int err_pos, quotpos = 0, length_key, length_msg;
-    printf("Enter a string: ");
-    fgets(string, 100, stdin);
-    string[strlen(string) - 1] = '\0';
-    printf("Enter a key: ");
-    fgets(key, 4, stdin);
-    key[strlen(key) - 1] = '\0';
-    length_key = strlen(key);
-    length_msg = strlen(string);
-    if (strlen(string) < 4) {
-        printf("Error: String is too short.\n");
-        return 0;
+int main()
+{
+    // DRIVER CODE
+    char temp[4], key_duplicate[4], buffer;
+    int i, j, len_key, len_msg, flag = 0, ch_index;
+
+    // SENDER SIDE
+    printf("Enter the key: ");
+    scanf("%s", key);
+    len_key = strlen(key);
+    printf("Enter the message: ");
+    scanf("%c", input);
+    fgets(input, 50, stdin);
+    input[strlen(input) - 1] = '\0';
+    len_msg = strlen(input);
+    checkSumXOR(1);
+    printf("The Quotient is: %s\n", quot);
+    printf("The Remainder is: %s\n", rem);
+    for (i = 0; i < len_msg; i++)
+    {
+        reciever_side[i] = input[i];
     }
-    strcpy(key_duplicate, key);
-    for (int i = 0; i < length_key-1; i++) {
-        string[length_msg+i] = '0';
-    }
-    for (int i = 0; i < length_key; i++) {
-        temp[i] = string[i];
-    }
-    for (int i = 0 ; i < length_msg; i++) {
-        quotient[i] = temp[0];
-        if (quotient[i] == '0') {
-            for (int j = 0; j < length_key; j++) {
-                key[j] = '0';
-            }
-        } else {
-            for (int j = 0; j < length_key; j++) {
-                key[j] = key_duplicate[j];
-            }
-        }
-        for (int j = length_key-1; j > 0; j--) {
-            if (temp[j] == key[j]) {
-                if (temp[j] == key[j]) {
-                    reminder[j-1] = '0';
-                } else {
-                    reminder[j-1] = '1';
-                }
-            }
-        }
-        reminder[length_key-1] = string[i+length_key];
-        strcpy(temp, reminder);
-    }
-    strcpy(reminder, temp);
-    printf("Quotient: %s\nReminder: %s\nData: %s%s", quotient, reminder, string, reminder);
+    for (i = 0; i < len_key - 1; i++, j++)
+        reciever_side[len_msg + i] = rem[i];
+    reciever_side[len_msg + len_key] = '\0';
+    printf("The Final Data sent: %s\n", reciever_side);
+    printf("\n");
+    
+    printf("Enter location to be modified (enter -1 to skip): ");
+	scanf("%i", &ch_index);
+	if (ch_index > strlen(reciever_side) || ch_index < 0) {
+		printf("Skipping Data modification. Array out of bounds\n");
+	} else {
+		if (reciever_side[ch_index] == '0')
+			reciever_side[ch_index] = '1';
+		else
+			reciever_side[ch_index] = '0';
+	}
+	checkSumXOR(0);
+	for (i = 0; i < strlen(rem); i++) {
+		if (rem[i] == '1') {
+			flag = 1;
+			break;
+		}
+	}
+	(flag == 1)? printf("Transmission Error Detected"): printf("Transmission Successful");
 }
