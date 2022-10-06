@@ -13,8 +13,8 @@ def knapsack(max_weight, data):
             for j in dataset_dash:
                 if (dataset.count(j) == 0):
                     dataset.append([data[i-1][0], data[i-1][1]])
-        # if (i != 0 or dataset_dash[i-1][1] > dataset[i][1]):
-        #     dataset.pop()
+        if (i != 0 or dataset_dash[i-1][1] > dataset[i][1]):
+            dataset.pop()
         dataset_dash.append([dataset[i][0] + data[i][0], dataset[i][1] + data[i][1]])
         
 

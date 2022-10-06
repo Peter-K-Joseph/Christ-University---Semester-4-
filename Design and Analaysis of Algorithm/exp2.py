@@ -32,8 +32,7 @@ def mergeSort(arr):
         
 def sort():
     start = timeit.default_timer()
-    for i in range(0, limiter):
-        array.append(random.randint(1, 50000))
+    array.append(random.randint(1, 50000, limiter))
     mergeSort(array)
     stop = timeit.default_timer()
     return [stop - start, len(array)]
@@ -42,7 +41,7 @@ if __name__ == '__main__':
     writer = csv.writer(open("file.csv", "a"), lineterminator='\n')
     time = []
     limiter = 5000
-    for i in range(0, 100):
+    for i in range(0, 1):
         average_time = []
         size = 0
         for j in range(0, 7):
